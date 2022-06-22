@@ -1,0 +1,89 @@
+{
+"AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "",
+    "Metadata": {
+
+    },
+    "Parameters": {
+    
+    },
+    "Mappings": {
+
+    },
+    "Conditions": {
+
+    },
+    "Resources": {
+    "vpcone": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock": "10.0.0.0/16",
+        "Tags": [{ "Key": "Name", "Value":  "vpcone" } ]
+      }
+    },
+    
+    "vpconeIGW": {
+      "Type": "AWS::EC2::InternetGateway",
+      "Properties": {
+        "Tags":[{ "Key": "Name", "Value":  "vpconeIGW" }]
+      
+     }
+   },
+    "AttachGateway": {
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+      "Properties": {
+        "VpcId": { "Ref": "vpcone" },
+        "InternetGatewayId": { "Ref": "vpconeIGW" }
+      }
+    },
+    
+    "vpconeRTB": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": 
+        { "Ref": "vpcone" },
+        "Tags": [ { "Key": "Name", "Value":  "vpconeRTB" }]
+      }
+    },
+    
+    "onevpcPUBRTB": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": "vpconeRTB",
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": { "Ref": "onevpcIGW" }
+     }
+    },
+    
+    "onePAssocGrop": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": { "Ref": "vpcone" },
+        "RouteTableId": { "Ref": "vpconeRTB" }
+        
+      }
+    },
+    
+    "vpconePUB": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "AvailabilityZone": "us-west-1-a",
+        "VpcId": { "Ref": "vpcone" },
+        "CidrBlock": "10.0.0.0/24",
+        "Tags": [{ "Key": "Name", "Value":  "vpconePUB" }]
+      }
+    },
+    "vpconePRV": {
+        "Type": "AWS::EC2::Subnet",
+        "Properties": {
+          "AvailabilityZone": "us-west-1-a",
+          "VpcId": { "Ref": "vpcone" },
+          "CidrBlock": "10.0.1.0/24",
+          "Tags": [{ "Key": "Name", "Value":  "vpconePRV" }]
+        }
+      }
+    },
+    "Outputs": {
+
+}
+}
